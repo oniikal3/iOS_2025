@@ -8,8 +8,50 @@
 import SwiftUI
 
 struct TrackRowView: View {
+    
+    private let url = URL(string: "https://picsum.photos/200")
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack(spacing: 16) {
+            // Track number
+            Text("01")
+                .font(.headline)
+                .padding(.horizontal, 4)
+            
+            // Cover image
+            AsyncImage(url: url) { image in
+                // โหลดรูปได้
+                image
+                    .resizable()
+            } placeholder: {
+                // ระหว่างรอโหลดรูป
+                Color.gray
+            }
+            .frame(width: 60, height: 60)
+            
+            // Track title and artist name
+            VStack(alignment: .leading) {
+                Text("Bohemian Rhapsody")
+                    .font(.headline)
+                    .bold()
+                Text("Queen")
+                    .font(.subheadline)
+            }
+            
+            Spacer()
+            
+            // Options button
+            Button {
+                
+            } label: {
+                Image(systemName: "ellipsis")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+            }
+
+
+        }
     }
 }
 

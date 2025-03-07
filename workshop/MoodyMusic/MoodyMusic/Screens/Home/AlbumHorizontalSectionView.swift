@@ -8,8 +8,29 @@
 import SwiftUI
 
 struct AlbumHorizontalSectionView: View {
+    
+//    let onAlbumTap:() -> Void
+    var onAlbumTap: (() -> Void)? = nil
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(alignment: .leading, spacing: 8) {
+            // Section title
+            Text("Recently Played")
+                .font(.title)
+                .bold()
+                .padding(.leading)
+                
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(0..<5) { index in
+                        AlbumCardView {
+                            print("Print tapped in AlbumHorizontalSectionView")
+                            onAlbumTap?()
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
