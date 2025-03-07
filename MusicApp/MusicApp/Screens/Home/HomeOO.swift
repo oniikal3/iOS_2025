@@ -2,38 +2,59 @@
 //  HomeOO.swift
 //  MusicApp
 //
-//  Created by Nathapong Masathien on 23/2/25.
+//  Created by Nathapong Masathien on 5/3/25.
 //
 
 import Foundation
 
 @Observable
-class HomeOO: ObservableObject { // Change to AlbumOO
-    var recentlyAlbums: [AlbumDO] = []
-    var popularAlbums: [AlbumDO] = []
+class HomeOO: ObservableObject {
+    var featuredPlaylists: [PlaylistDO] = []
+    var newReleaseAlbums: [AlbumDO] = []
+    var artists: [ArtistDO] = []
+    var isLoading = false
     
-    func fetch() {
-        fetchRecentlyAlbums()
-        fetchPopularAlbums()
+    @MainActor // Make sure to run this on the main thread
+    func fetch() async {
+        isLoading = true
+        await fetchNewReleaseAlbums()
+        await fetchFeaturedPlaylists()
+        
+        isLoading = false
     }
     
-    private func fetchRecentlyAlbums() {
-        recentlyAlbums = [
-            AlbumDO(title: "The Greatest Hits", description: "A collection of Queen's greatest hits.", artist: "Queen", cover: "queen"),
-            AlbumDO(title: "The Best of Elton John", description: "A compilation of Elton John's best songs.", artist: "Elton John", cover: "elton_john"),
-            AlbumDO(title: "The Best of Bee Gees", description: "The best hits from the Bee Gees.", artist: "Bee Gees", cover: "bee_gees"),
-            AlbumDO(title: "The Best of ABBA", description: "ABBA's greatest hits compilation.", artist: "ABBA", cover: "abba"),
-            AlbumDO(title: "The Best of The Carpenters", description: "A collection of The Carpenters' best songs.", artist: "The Carpenters", cover: "the_carpenters")
-        ]
+    private func fetchNewReleaseAlbums() async {
+        do {
+            let albums = try await SpotifyAPI.shared.getNewReleases()
+            newReleaseAlbums = albums.albums.items.map { album in
+                AlbumDO(
+                    id: album.id,
+                    title: album.name,
+                    description: nil,
+                    artist: album.artists.first?.name ?? "Unknown",
+                    cover: album.images.first?.url
+                )
+            }
+        } catch {
+            print("New releases fetch failed: \(error)")
+        }
+    }
+    
+    private func fetchFeaturedPlaylists() async {
+        do {
+            let playlists = try await SpotifyAPI.shared.getFeaturedPlaylists()
+            featuredPlaylists = playlists.playlists.items.map { playlist in
+                PlaylistDO(
+                    id: playlist.id,
+                    name: playlist.name,
+                    description: playlist.description,
+                    image: playlist.images.first?.url,
+                    owner: playlist.owner.display_name
+                )
+            }
+        } catch {
+            print("Featured playlists fetch failed: \(error)")
+        }
     }
 
-    private func fetchPopularAlbums() {
-        popularAlbums = [
-            AlbumDO(title: "The Best of The Beatles", description: "A compilation of The Beatles' greatest hits.", artist: "The Beatles", cover: "the_beatles"),
-            AlbumDO(title: "The Best of The Rolling Stones", description: "The Rolling Stones' best songs collection.", artist: "The Rolling Stones", cover: "the_rolling_stones"),
-            AlbumDO(title: "The Best of The Eagles", description: "A collection of The Eagles' greatest hits.", artist: "The Eagles", cover: "the_eagles"),
-            AlbumDO(title: "The Best of The Doors", description: "The best hits from The Doors.", artist: "The Doors", cover: "the_doors"),
-            AlbumDO(title: "The Best of The Who", description: "A compilation of The Who's greatest hits.", artist: "The Who", cover: "the_who")
-        ]
-    }
 }

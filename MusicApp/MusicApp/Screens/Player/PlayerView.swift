@@ -5,27 +5,23 @@
 //  Created by Nathapong Masathien on 15/2/25.
 //
 
-
-/* Homework
- - Use icon from image instead of systemName
- - Implement feature favorite music
- - Implement feature shuffle music
- */
-
 /* Todo
  - Make view scrollable
  - Add feature to show lyrics
+ - Fix vinyl record rotation animation
+ - Add feature to show lyrics
+ - Button didn't change when track is ended
  */
 import SwiftUI
 
 struct PlayerView: View {
-    @EnvironmentObject var player: MusicPlayerOO
-    
-//    @Binding var isPresented: Bool
+    @Environment(MusicPlayerOO.self) private var player
+
+    //    @Binding var isPresented: Bool
     
     @State private var rotation: Double = 0
-    @State private var progress: Double = 0 // Move to OO model
-    @State private var isPlaying = false // Move to OO model
+    //    @State private var progress: Double = 0 // Move to OO model
+    //    @State private var isPlaying = false // Move to OO model
     @State private var offsetY: CGFloat = 0
     
     var body: some View {
@@ -65,21 +61,39 @@ struct PlayerView: View {
                 .background(Color.black.opacity(0.8))
                 
                 // Rotating vinyl record with animation effect when playing music with music image from URL
-                Image(systemName: "music.note")
-                    .resizable()
-                    .frame(width: 300, height: 300)
-                    .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.gray, lineWidth: 4))
-                    .shadow(radius: 10)
-                    .rotationEffect(.degrees(rotation), anchor: .center)
-                    .animation(.linear(duration: 10).repeatForever(autoreverses: false), value: rotation)
-                    .onAppear() {
-                        // Start rotating the vinyl record
-                        //                    withAnimation {
-                        //                        self.rotation = 360
-                        //                    }
+                AsyncImage(url: player.currentTrack?.imageURL) { image in
+                    image
+                        .resizable()
+                } placeholder: {
+                    Image(systemName: "music.note")
+                        .resizable()
+                        .scaledToFit()
+                }
+                .frame(width: 300, height: 300)
+                .clipShape(Circle())
+                .overlay(Circle().stroke(Color.gray, lineWidth: 4))
+                .shadow(radius: 10)
+                .rotationEffect(.degrees(rotation), anchor: .center)
+//                .animation(.linear(duration: 10).repeatForever(autoreverses: false), value: rotation)
+                .onChange(of: player.isPlaying, { oldValue, newValue in
+                    print("Player is playing: \(newValue)")
+                    if newValue {
+                        withAnimation(.linear(duration: 10).repeatForever(autoreverses: false)) {
+                            rotation += 360
+                        }
+                    } else {
+                        print("Player is not playing")
+                        withAnimation {
+                            rotation = rotation.truncatingRemainder(dividingBy: 360)
+                        }
                     }
-                
+                })
+//                .onAppear() {
+//                    // Start rotating the vinyl record
+//                    withAnimation {
+//                        self.rotation = 360
+//                    }
+//                }
                 
                 // Music title and artist name
                 VStack {
@@ -91,13 +105,14 @@ struct PlayerView: View {
                 
                 // Linear progress bar for music playback
                 VStack {
-                    ProgressView(value: progress, total: 1)
+                    ProgressView(value: player.progress, total: 1)
                         .progressViewStyle(LinearProgressViewStyle())
+                        .accentColor(.yellow)
                     HStack {
-                        Text("0:00")
+                        Text(player.progressTime)
                             .font(.caption)
                         Spacer()
-                        Text("3:00")
+                        Text(player.currentTrack?.endTime ?? "0:00")
                             .font(.caption)
                     }
                 }
@@ -125,20 +140,25 @@ struct PlayerView: View {
                         
                         // Play/Pause toggle button
                         Button(action: {
-                            isPlaying.toggle()
-                            if isPlaying {
-                                // Start rotating the vinyl record
-                                withAnimation {
-                                    self.rotation = 360
-                                }
+                            if player.isPlaying {
+                                // Stop rotating the vinyl record no need to set to 0
+                                player.pause()
+//                                withAnimation {
+//                                    rotation = 0
+//                                }
+                                
+                                // print check player isplaying
+                                print("player is playing 1: \(player.isPlaying)")
                             } else {
-                                // Stop rotating the vinyl record
-                                withAnimation {
-                                    self.rotation = 0
+                                // Start rotating the vinyl record
+                                Task {
+                                    await player.play()
+                                    print("player is playing 2: \(player.isPlaying)")
+//                                    rotation += 360
                                 }
                             }
                         }) {
-                            Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                            Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
                                 .font(.title)
                         }
                         
@@ -168,22 +188,22 @@ struct PlayerView: View {
             .padding(.top, 20)
             //        .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline) // To remove white space at the top of view
-//            .toolbar {
-//                ToolbarItem(placement: .topBarLeading) {
-//                    Button(action: {
-//                        // Collapse player view
-//                        withAnimation {
-//                            isPresented.toggle()
-//                        }
-//                    }) {
-//                        Image(systemName: "chevron.down")
-//                    }
-//                }
-//                ToolbarItem(placement: .principal) {
-//                    Text("Now Playing")
-//                        .font(.headline)
-//                }
-//            }
+            //            .toolbar {
+            //                ToolbarItem(placement: .topBarLeading) {
+            //                    Button(action: {
+            //                        // Collapse player view
+            //                        withAnimation {
+            //                            isPresented.toggle()
+            //                        }
+            //                    }) {
+            //                        Image(systemName: "chevron.down")
+            //                    }
+            //                }
+            //                ToolbarItem(placement: .principal) {
+            //                    Text("Now Playing")
+            //                        .font(.headline)
+            //                }
+            //            }
             .frame(width: geometry.size.width, height: geometry.size.height)
             .ignoresSafeArea()
             .background(Color.black.ignoresSafeArea())
@@ -216,7 +236,7 @@ struct PlayerView: View {
     PreviewWrapper {
         PlayerView()
     }
-//    NavigationStack {
-//        PlayerView(isPresented: .constant(true))
-//    }
+    //    NavigationStack {
+    //        PlayerView(isPresented: .constant(true))
+    //    }
 }

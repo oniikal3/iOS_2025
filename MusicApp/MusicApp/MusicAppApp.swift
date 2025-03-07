@@ -7,24 +7,35 @@
 
 import SwiftUI
 
+
+/* Homework #1
+ - Implement Profile View
+ */
+
+/* Homework #2
+ - Implement search bar in search view
+ - Implement show artist in HomeView and make it clickable to ArtistView
+ */
+
+/* Homework - Backlog
+ - Use icon from image instead of systemName
+ - Implement feature favorite music
+ - Implement feature shuffle music
+ - Implement search music
+ */
+
 @main
 struct MusicAppApp: App {
-    @StateObject var player = MusicPlayerOO()
+    @State var player = MusicPlayerOO()
     
     var body: some Scene {
         WindowGroup {
-            HomeView()
-                .environmentObject(player)
+            MainTabView()
+                .environment(player)
+//            HomeView()
+//                .environmentObject(player)
         }
     }
-}
-
-
-// Will move this to a new file later
-@Observable
-class MusicPlayerOO: ObservableObject {
-    var currentTrack: TrackDO?
-    var isPlayerPresented = false
 }
 
 
@@ -37,6 +48,6 @@ struct PreviewWrapper<Content: View>: View {
     
     var body: some View {
         content
-            .environmentObject(MusicPlayerOO())
+            .environment(MusicPlayerOO())
     }
 }

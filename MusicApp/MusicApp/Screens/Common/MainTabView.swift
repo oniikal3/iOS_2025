@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @EnvironmentObject var player: MusicPlayerOO
-    
+    @Environment(MusicPlayerOO.self) private var player
+
     init() {
         let appearance = UITabBarAppearance()
         appearance.backgroundColor = .black
@@ -55,7 +55,7 @@ struct MainTabView: View {
                 Spacer()
                 
                 if player.currentTrack != nil {
-                    MiniPlayerView(isPresented: .constant(true))
+                    MiniPlayerView()
                         .padding(.bottom, 49)
                         .onTapGesture {
                             withAnimation {

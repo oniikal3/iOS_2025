@@ -7,10 +7,25 @@
 
 import Foundation
 
-struct AlbumDO: Identifiable, Hashable {
-    let id = UUID()
+protocol MediaItem: Identifiable, Hashable {
+    var id: String { get }
+    var title: String { get }
+    var subtitle: String { get }
+    var imageURL: URL? { get }
+}
+
+struct AlbumDO: MediaItem {
+    let id: String
     let title: String
     let description: String?
     let artist: String // Might remove this later
-    let cover: String
+    let cover: URL?
+    
+    var subtitle: String {
+        artist
+    }
+    
+    var imageURL: URL? {
+        cover
+    }
 }

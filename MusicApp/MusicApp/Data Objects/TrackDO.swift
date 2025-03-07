@@ -8,8 +8,16 @@
 import Foundation
 
 struct TrackDO: Identifiable, Hashable {
-    var id = UUID()
-    var title: String
-    var artist: String
-    var previewURL: URL?
+    let id: String
+    let title: String
+    let artist: String
+    let previewURL: URL?
+    let imageURL: URL?
+    let duration: Int
+    
+    var endTime: String {
+        let minutes = duration / 60
+        let seconds = duration % 60
+        return "\(minutes):\(seconds)"
+    }
 }

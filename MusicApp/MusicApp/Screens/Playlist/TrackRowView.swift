@@ -13,11 +13,7 @@ struct TrackRowView: View {
     
     var body: some View {
         HStack(spacing: 16) {
-//            Image(systemName: "music.note")
-//                .resizable()
-//                .frame(width: 60, height: 60)
-//                .cornerRadius(8)
-            AsyncImage(url: URL(string: "")) { image in
+            AsyncImage(url: track.imageURL) { image in
                 image
                     .resizable()
             } placeholder: {
@@ -54,6 +50,6 @@ struct TrackRowView: View {
 }
 
 #Preview {
-    TrackRowView(track: TrackDO(title: "Title", artist: "Artist"))
+    TrackRowView(track: TrackDO(id: "1", title: "Title", artist: "Artist", previewURL: nil, imageURL: URL(string: "https://picsum.photos/200"), duration: 0))
         .background(Color.black)
 }

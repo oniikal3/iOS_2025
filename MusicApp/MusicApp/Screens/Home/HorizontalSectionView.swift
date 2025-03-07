@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct HorizontalSectionView: View {
+struct HorizontalSectionView<T: MediaItem>: View {
     let section: String
-    let albums: [AlbumDO]
-    let onAlbumTap: (AlbumDO) -> Void
+    let items: [T]
+    let onItemSelected: (T) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -22,10 +22,10 @@ struct HorizontalSectionView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
                     // Loop through the albums with AlbumDO
-                    ForEach(albums) { album in
-                        AlbumCardView(title: album.title, artist: album.artist, cover: album.cover,
+                    ForEach(items) { item in
+                        AlbumCardView(title: item.title, artist: item.subtitle, cover: item.imageURL,
                                       onTap: {
-                                        onAlbumTap(album)
+                            onItemSelected(item)
                         })
                     }
                 }
@@ -38,23 +38,26 @@ struct HorizontalSectionView: View {
 
 #Preview {
     HorizontalSectionView(section: "Section Title",
-                          albums: [
-                            AlbumDO(title: "Album Title Album Title",
+                          items: [
+                            AlbumDO(id: "1",
+                                    title: "Album Title Album Title",
                                     description: "Lolem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                                     artist: "Artist Name",
-                                    cover: "cover1"
+                                    cover: URL(string: "https://picsum.photos/200")
                                    ),
-                            AlbumDO(title: "Album Title",
+                            AlbumDO(id: "2",
+                                    title: "Album Title",
                                     description: "Lolem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                                     artist: "Artist Name",
-                                    cover: "cover2"
+                                    cover: URL(string: "https://picsum.photos/200")
                                    ),
-                            AlbumDO(title: "Album Title",
+                            AlbumDO(id: "3",
+                                    title: "Album Title",
                                     description: "Lolem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                                     artist: "Artist Name",
-                                    cover: "cover3"
+                                    cover: URL(string: "https://picsum.photos/200")
                                    )
                           ],
-                          onAlbumTap: { _ in }
+                          onItemSelected: { _ in }
     )
 }

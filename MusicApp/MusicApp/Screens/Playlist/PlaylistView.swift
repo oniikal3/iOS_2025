@@ -8,14 +8,20 @@
 import SwiftUI
 
 struct PlaylistView: View {
-    @EnvironmentObject var player: MusicPlayerOO
-    
-    let album: AlbumDO
+    @Environment(MusicPlayerOO.self) private var player
+
+    let playlist: PlaylistDO
+    @StateObject private var oo: PlaylistOO
     
     private let actionButtonSize: CGFloat = 60
     private let buttonSize: CGFloat = 30
     
     @State private var isPlayerPresented = false
+    
+    init(playlist: PlaylistDO) {
+        self.playlist = playlist
+        _oo = StateObject(wrappedValue: PlaylistOO(playlist: playlist)) // Initialize PlaylistOO with the playlist
+    }
     
     var body: some View {
         ZStack {
@@ -25,7 +31,7 @@ struct PlaylistView: View {
                         Spacer()
                         
                         // Playlist cover image
-                        AsyncImage(url: URL(string: album.cover)) { image in
+                        AsyncImage(url: oo.playlist.image) { image in
                             image
                                 .resizable()
                             //                        .scaledToFit()
@@ -43,14 +49,14 @@ struct PlaylistView: View {
                     
                     VStack(alignment: .leading, spacing: 4) {
                         // Playlist title
-                        Text(album.title)
+                        Text(oo.playlist.name)
                             .font(.title)
                             .foregroundColor(.white)
                             .bold()
                             .padding(.top, 16)
                         
                         // Description
-                        if let description = album.description {
+                        if let description = oo.playlist.description {
                             Text(description)
                                 .font(.subheadline)
                                 .foregroundColor(.white)
@@ -103,7 +109,11 @@ struct PlaylistView: View {
                         
                         Button(action: {
                             print("Play button tapped")
-                            player.currentTrack = sampleTracks.first
+                            if let firstTrack = oo.tracks.first {
+                                Task {
+                                    await player.play(firstTrack)
+                                }
+                            }
                             
                             withAnimation {
                                 player.isPlayerPresented = true
@@ -118,10 +128,12 @@ struct PlaylistView: View {
                     
                     // List of songs
                     LazyVStack(alignment: .leading, spacing: 16) {
-                        ForEach(sampleTracks, id: \.self) { track in
+                        ForEach(oo.tracks) { track in
                             TrackRowView(track: track, onTap: { selectedTrack in
                                 print("Track selected: \(selectedTrack.title)")
-                                player.currentTrack = selectedTrack
+                                Task {
+                                    await player.play(selectedTrack)
+                                }
                                 withAnimation {
                                     player.isPlayerPresented = true
                                 }
@@ -129,10 +141,11 @@ struct PlaylistView: View {
                         }
                     }
                 }
+                .padding(.bottom, player.currentTrack != nil ? miniPlayerHeight : 0)
             }
             .padding(.horizontal)
             .background(
-                AsyncImage(url: URL(string: album.cover)) { phase in
+                AsyncImage(url: playlist.image) { phase in
                     switch phase {
                     case .empty:
                         EmptyView()
@@ -190,6 +203,13 @@ struct PlaylistView: View {
 //                    .transition(.move(edge: .bottom))
 //            }
         }
+        .onAppear {
+            if oo.tracks.isEmpty {
+                Task {
+                    await oo.fetchTracks()
+                }
+            }
+        }
 //        .fullScreenCover(isPresented: $isPlayerPresented) {
 //            PlayerView(isPresented: $isPlayerPresented)
 //        }
@@ -211,31 +231,33 @@ struct PlaylistView: View {
 
 // Sample data for playlist with 20 tracks with realistic song titles and artist names
 let sampleTracks: [TrackDO] = [
-    TrackDO(title: "Shape of You", artist: "Ed Sheeran"),
-    TrackDO(title: "Blinding Lights", artist: "The Weeknd"),
-    TrackDO(title: "Levitating", artist: "Dua Lipa"),
-    TrackDO(title: "Peaches", artist: "Justin Bieber"),
-    TrackDO(title: "Save Your Tears", artist: "The Weeknd"),
-    TrackDO(title: "Good 4 U", artist: "Olivia Rodrigo"),
-    TrackDO(title: "Kiss Me More", artist: "Doja Cat"),
-    TrackDO(title: "Montero (Call Me By Your Name)", artist: "Lil Nas X"),
-    TrackDO(title: "Stay", artist: "The Kid LAROI"),
-    TrackDO(title: "Deja Vu", artist: "Olivia Rodrigo"),
-    TrackDO(title: "Bad Habits", artist: "Ed Sheeran"),
-    TrackDO(title: "Industry Baby", artist: "Lil Nas X"),
-    TrackDO(title: "Butter", artist: "BTS"),
-    TrackDO(title: "Happier Than Ever", artist: "Billie Eilish"),
-    TrackDO(title: "Drivers License", artist: "Olivia Rodrigo"),
-    TrackDO(title: "Leave The Door Open", artist: "Bruno Mars"),
-    TrackDO(title: "Heat Waves", artist: "Glass Animals"),
-    TrackDO(title: "Astronaut In The Ocean", artist: "Masked Wolf"),
-    TrackDO(title: "Mood", artist: "24kGoldn"),
-    TrackDO(title: "Dynamite", artist: "BTS")
+    TrackDO(id: UUID().uuidString, title: "Shape of You", artist: "Ed Sheeran", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 240),
+    TrackDO(id: UUID().uuidString, title: "Blinding Lights", artist: "The Weeknd", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 200),
+    TrackDO(id: UUID().uuidString, title: "Levitating", artist: "Dua Lipa", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 203),
+    TrackDO(id: UUID().uuidString, title: "Peaches", artist: "Justin Bieber", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 198),
+    TrackDO(id: UUID().uuidString, title: "Save Your Tears", artist: "The Weeknd", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 215),
+    TrackDO(id: UUID().uuidString, title: "Good 4 U", artist: "Olivia Rodrigo", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 178),
+    TrackDO(id: UUID().uuidString, title: "Kiss Me More", artist: "Doja Cat", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 208),
+    TrackDO(id: UUID().uuidString, title: "Montero (Call Me By Your Name)", artist: "Lil Nas X", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 137),
+    TrackDO(id: UUID().uuidString, title: "Stay", artist: "The Kid LAROI", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 141),
+    TrackDO(id: UUID().uuidString, title: "Deja Vu", artist: "Olivia Rodrigo", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 220),
+    TrackDO(id: UUID().uuidString, title: "Bad Habits", artist: "Ed Sheeran", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 231),
+    TrackDO(id: UUID().uuidString, title: "Industry Baby", artist: "Lil Nas X", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 212),
+    TrackDO(id: UUID().uuidString, title: "Butter", artist: "BTS", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 164),
+    TrackDO(id: UUID().uuidString, title: "Happier Than Ever", artist: "Billie Eilish", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 298),
+    TrackDO(id: UUID().uuidString, title: "Drivers License", artist: "Olivia Rodrigo", previewURL: URL(string: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3"), imageURL: URL(string: "https://picsum.photos/200"), duration: 242)
 ]
-
 
 #Preview {
     PreviewWrapper {
-        PlaylistView(album:AlbumDO(title: "Album Title", description: "A collection of The Carpenters' best songs.", artist: "Artist Name", cover: "cover1"))
+        PlaylistView(
+            playlist: PlaylistDO(
+                id: "1",
+                name: "Today's Hits",
+                description: "The biggest hits from today's top artists",
+                image: URL(string: "https://picsum.photos/200"),
+                owner: "Apple Music"
+            )
+        )
     }
 }

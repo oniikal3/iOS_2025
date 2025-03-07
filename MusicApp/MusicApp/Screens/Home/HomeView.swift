@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @StateObject var oo = HomeOO()
     @State private var selectedAlbum: AlbumDO?
+    @State private var selectedPlaylist: PlaylistDO?
     
     // Header view
     var profileHeaderView: some View {
@@ -55,22 +56,45 @@ struct HomeView: View {
                 
                 // Album sections
                 ScrollView(.vertical, showsIndicators: false) {
-                    HorizontalSectionView(section: "Recently",
-                                          albums: oo.recentlyAlbums) { album in
-                        self.selectedAlbum = album
+                    HorizontalSectionView(section: "Featured Playlists",
+                                          items: oo.featuredPlaylists) { playlist in
+                        self.selectedPlaylist = playlist
                     }
-                    HorizontalSectionView(section: "Popular", albums: oo.popularAlbums) { album in
+                    HorizontalSectionView(section: "New Releases", items: oo.newReleaseAlbums) { album in
                         self.selectedAlbum = album
                     }
                 }
                 .foregroundStyle(.white)
+                .refreshable { // To make scroll view refreshable
+                    await oo.fetch()
+                }
+                .overlay {
+//                    if oo.isLoading {
+//                        ProgressView("Refreshing...")
+//                            .progressViewStyle(CircularProgressViewStyle())
+//                            .scaleEffect(1.5, anchor: .center)
+//                            .padding()
+//                    }
+                    oo.isLoading ? ProgressView("Refreshing...")
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .scaleEffect(1, anchor: .center)
+                        .padding()
+                    : nil
+                }
             }
             .background(.black)
             .navigationDestination(item: $selectedAlbum, destination: { album in
-                PlaylistView(album: album)
+                AlbumView(album: album)
+            })
+            .navigationDestination(item: $selectedPlaylist, destination: { playlist in
+                PlaylistView(playlist: playlist)
             })
             .onAppear {
-                oo.fetch()
+                if oo.featuredPlaylists.isEmpty && oo.newReleaseAlbums.isEmpty {
+                    Task {
+                        await oo.fetch()
+                    }
+                }
             }
         }
         .toolbarBackground(.black, for: .navigationBar)

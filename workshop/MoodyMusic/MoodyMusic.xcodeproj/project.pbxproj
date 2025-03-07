@@ -7,32 +7,19 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		1446E5B12D60A0C2008175BC /* MusicApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		143F71DA2D72BA630005EA4E /* MoodyMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoodyMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		14ACA61C2D70D25F00FAE19C /* Exceptions for "MusicApp" folder in "MusicApp" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 1446E5B02D60A0C2008175BC /* MusicApp */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		1446E5DA2D60A2A0008175BC /* MusicApp */ = {
+		143F71DC2D72BA630005EA4E /* MoodyMusic */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				14ACA61C2D70D25F00FAE19C /* Exceptions for "MusicApp" folder in "MusicApp" target */,
-			);
-			path = MusicApp;
+			path = MoodyMusic;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1446E5AE2D60A0C2008175BC /* Frameworks */ = {
+		143F71D72D72BA630005EA4E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -42,18 +29,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1446E5A82D60A0C2008175BC = {
+		143F71D12D72BA630005EA4E = {
 			isa = PBXGroup;
 			children = (
-				1446E5DA2D60A2A0008175BC /* MusicApp */,
-				1446E5B22D60A0C2008175BC /* Products */,
+				143F71DC2D72BA630005EA4E /* MoodyMusic */,
+				143F71DB2D72BA630005EA4E /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		1446E5B22D60A0C2008175BC /* Products */ = {
+		143F71DB2D72BA630005EA4E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1446E5B12D60A0C2008175BC /* MusicApp.app */,
+				143F71DA2D72BA630005EA4E /* MoodyMusic.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -61,66 +48,64 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1446E5B02D60A0C2008175BC /* MusicApp */ = {
+		143F71D92D72BA630005EA4E /* MoodyMusic */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1446E5BF2D60A0C4008175BC /* Build configuration list for PBXNativeTarget "MusicApp" */;
+			buildConfigurationList = 143F71E82D72BA640005EA4E /* Build configuration list for PBXNativeTarget "MoodyMusic" */;
 			buildPhases = (
-				1446E5AD2D60A0C2008175BC /* Sources */,
-				1446E5AE2D60A0C2008175BC /* Frameworks */,
-				1446E5AF2D60A0C2008175BC /* Resources */,
+				143F71D62D72BA630005EA4E /* Sources */,
+				143F71D72D72BA630005EA4E /* Frameworks */,
+				143F71D82D72BA630005EA4E /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				1446E5DA2D60A2A0008175BC /* MusicApp */,
+				143F71DC2D72BA630005EA4E /* MoodyMusic */,
 			);
-			name = MusicApp;
+			name = MoodyMusic;
 			packageProductDependencies = (
 			);
-			productName = MusicApp;
-			productReference = 1446E5B12D60A0C2008175BC /* MusicApp.app */;
+			productName = MoodyMusic;
+			productReference = 143F71DA2D72BA630005EA4E /* MoodyMusic.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		1446E5A92D60A0C2008175BC /* Project object */ = {
+		143F71D22D72BA630005EA4E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
-					1446E5B02D60A0C2008175BC = {
+					143F71D92D72BA630005EA4E = {
 						CreatedOnToolsVersion = 16.2;
 					};
 				};
 			};
-			buildConfigurationList = 1446E5AC2D60A0C2008175BC /* Build configuration list for PBXProject "MusicApp" */;
+			buildConfigurationList = 143F71D52D72BA630005EA4E /* Build configuration list for PBXProject "MoodyMusic" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 1446E5A82D60A0C2008175BC;
+			mainGroup = 143F71D12D72BA630005EA4E;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 1446E5B22D60A0C2008175BC /* Products */;
+			productRefGroup = 143F71DB2D72BA630005EA4E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1446E5B02D60A0C2008175BC /* MusicApp */,
+				143F71D92D72BA630005EA4E /* MoodyMusic */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1446E5AF2D60A0C2008175BC /* Resources */ = {
+		143F71D82D72BA630005EA4E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -130,7 +115,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1446E5AD2D60A0C2008175BC /* Sources */ = {
+		143F71D62D72BA630005EA4E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -140,7 +125,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		1446E5BD2D60A0C4008175BC /* Debug */ = {
+		143F71E62D72BA640005EA4E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -203,7 +188,7 @@
 			};
 			name = Debug;
 		};
-		1446E5BE2D60A0C4008175BC /* Release */ = {
+		143F71E72D72BA640005EA4E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -259,19 +244,16 @@
 			};
 			name = Release;
 		};
-		1446E5C02D60A0C4008175BC /* Debug */ = {
+		143F71E92D72BA640005EA4E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = MusicApp/MusicAppDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"MusicApp/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_ASSET_PATHS = "\"MoodyMusic/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MusicApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -282,7 +264,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.nathapong.class2025.MusicApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nathapong.class2025.MoodyMusic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -290,18 +272,16 @@
 			};
 			name = Debug;
 		};
-		1446E5C12D60A0C4008175BC /* Release */ = {
+		143F71EA2D72BA640005EA4E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"MusicApp/Preview Content\"";
-				DEVELOPMENT_TEAM = 63ZKTLQXCQ;
+				DEVELOPMENT_ASSET_PATHS = "\"MoodyMusic/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MusicApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -312,7 +292,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.nathapong.class2025.MusicApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nathapong.class2025.MoodyMusic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -323,25 +303,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1446E5AC2D60A0C2008175BC /* Build configuration list for PBXProject "MusicApp" */ = {
+		143F71D52D72BA630005EA4E /* Build configuration list for PBXProject "MoodyMusic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1446E5BD2D60A0C4008175BC /* Debug */,
-				1446E5BE2D60A0C4008175BC /* Release */,
+				143F71E62D72BA640005EA4E /* Debug */,
+				143F71E72D72BA640005EA4E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1446E5BF2D60A0C4008175BC /* Build configuration list for PBXNativeTarget "MusicApp" */ = {
+		143F71E82D72BA640005EA4E /* Build configuration list for PBXNativeTarget "MoodyMusic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1446E5C02D60A0C4008175BC /* Debug */,
-				1446E5C12D60A0C4008175BC /* Release */,
+				143F71E92D72BA640005EA4E /* Debug */,
+				143F71EA2D72BA640005EA4E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 1446E5A92D60A0C2008175BC /* Project object */;
+	rootObject = 143F71D22D72BA630005EA4E /* Project object */;
 }
