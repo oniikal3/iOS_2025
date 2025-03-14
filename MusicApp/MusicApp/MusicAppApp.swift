@@ -29,30 +29,56 @@ import SwiftUI
  - Implement search music
  */
 
+import SwiftData
+
 @main
 struct MusicAppApp: App {
+    
+    let container: ModelContainer
+    
     @State var player = MusicPlayerOO()
+    @State var favoriteManager: FavoriteManager
+    
+    init() {
+        do {
+            container = try ModelContainer(for: FavTrack.self)
+            favoriteManager = FavoriteManager(modelContext: container.mainContext)
+        } catch {
+            fatalError("Unable to create ModelContainer. Error: \(error)")
+        }
+    }
     
     var body: some Scene {
         WindowGroup {
             MainTabView()
                 .environment(player)
-//            HomeView()
-//                .environmentObject(player)
+                .environment(favoriteManager)
+            //            HomeView()
+            //                .environmentObject(player)
         }
+        .modelContainer(container)
     }
 }
 
 
 struct PreviewWrapper<Content: View>: View {
     let content: Content
+    let container: ModelContainer
     
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
+        do {
+            container = try ModelContainer(for: FavTrack.self)
+        } catch {
+            fatalError("Could not initialize ModelContainer")
+        }
     }
     
     var body: some View {
         content
             .environment(MusicPlayerOO())
+            .environment(FavoriteManager(modelContext: container.mainContext))
+            .modelContainer(container)
+        
     }
 }

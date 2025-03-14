@@ -16,6 +16,7 @@ import SwiftUI
 
 struct PlayerView: View {
     @Environment(MusicPlayerOO.self) private var player
+    @Environment(FavoriteManager.self) private var favoriteManager
 
     //    @Binding var isPresented: Bool
     
@@ -178,9 +179,15 @@ struct PlayerView: View {
                     // Favorite button
                     Button(action: {
                         // Favorite music
+                        if let trackId = player.currentTrack?.id {
+                            favoriteManager.toggleFavorite(trackId: trackId)
+                        }
                     }) {
-                        Image(systemName: "heart")
+                        let id = player.currentTrack?.id ?? ""
+                        let isFavorite = favoriteManager.isFavorite(trackId: id)
+                        Image(systemName: isFavorite ? "heart.fill" : "heart")
                             .font(.title2)
+                            .foregroundStyle(isFavorite ? .red : .white)
                     }
                 }
                 .padding()

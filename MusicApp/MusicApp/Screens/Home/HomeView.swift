@@ -6,11 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
     @StateObject var oo = HomeOO()
     @State private var selectedAlbum: AlbumDO?
     @State private var selectedPlaylist: PlaylistDO?
+    
+//    @Environment(FavoriteManager.self) private var favoriteManager
+    @Query private var favorites: [FavTrack]
     
     // Header view
     var profileHeaderView: some View {
@@ -62,6 +66,20 @@ struct HomeView: View {
                     }
                     HorizontalSectionView(section: "New Releases", items: oo.newReleaseAlbums) { album in
                         self.selectedAlbum = album
+                    }
+                    
+                    if !favorites.isEmpty {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            LazyHStack(spacing: 16) {
+                                ForEach(favorites) { fav in
+                                    VStack {
+                                        Text(fav.trackId)
+                                        Text(fav.dateAdded, style: .date)
+                                    }
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
                     }
                 }
                 .foregroundStyle(.white)
