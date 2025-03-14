@@ -10,6 +10,7 @@ import SwiftUI
 struct AlbumHorizontalSectionView: View {
     
 //    let onAlbumTap:() -> Void
+    var items: [Playlist] = []
     var onAlbumTap: (() -> Void)? = nil
     
     var body: some View {
@@ -22,12 +23,17 @@ struct AlbumHorizontalSectionView: View {
                 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
-                    ForEach(0..<5) { index in
-                        AlbumCardView {
-                            print("Print tapped in AlbumHorizontalSectionView")
+                    ForEach(items, id: \.id) { item in
+                        AlbumCardView(item: item) {
                             onAlbumTap?()
                         }
                     }
+//                    ForEach(0..<5) { index in
+//                        AlbumCardView {
+//                            print("Print tapped in AlbumHorizontalSectionView")
+//                            onAlbumTap?()
+//                        }
+//                    }
                 }
             }
         }

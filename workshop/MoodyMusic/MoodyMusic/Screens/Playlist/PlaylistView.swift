@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct PlaylistView: View {
+    
+    @Environment(MusicPlayerOO.self) private var player: MusicPlayerOO
+        
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -80,6 +83,9 @@ struct PlaylistView: View {
 
                     Button {
                         print("Play")
+                        withAnimation {
+                            player.isPlayerPresented = true
+                        }
                     } label: {
                         Image(systemName: "play.circle.fill")
                             .resizable()
@@ -99,10 +105,15 @@ struct PlaylistView: View {
             .padding(.horizontal)
         }
         .background(.gray)
+//        .fullScreenCover(isPresented: $isPlayerPresented) {
+//            PlayerView(isPresented: $isPlayerPresented)
+//        }
 
     }
 }
 
 #Preview {
-    PlaylistView()
+    PreviewWrapper {
+        PlaylistView()
+    }
 }

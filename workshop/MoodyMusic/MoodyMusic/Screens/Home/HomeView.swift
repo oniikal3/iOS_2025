@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-struct HomeView: View {
+struct HomeView: View {    
     
     @State private var isPresented: Bool = false
+    
+    @State private var playlists: [Playlist] = []
     
     var profileHeaderView: some View {
         HStack {
@@ -47,11 +49,12 @@ struct HomeView: View {
             VStack(alignment: .leading) {
                 // Header Profile
                 profileHeaderView
+                    .foregroundStyle(.white)
                     .padding()
                 
                 // Album sections
                 ScrollView(.vertical) {
-                    AlbumHorizontalSectionView {
+                    AlbumHorizontalSectionView(items: playlists) {
                         print("Tapped album in HomeView")
                         isPresented = true
                     }
@@ -59,9 +62,22 @@ struct HomeView: View {
                         isPresented = true
                     }
                 }
+                .foregroundStyle(.white)
+
             }
+            .background(.black)
             .navigationDestination(isPresented: $isPresented) {
                 PlaylistView()
+            }
+            .onAppear() {
+                Task {
+                    do {
+                        let response = try await SpotifyAPI.shared.getChillPlaylists()
+                        self.playlists = response.playlists.items
+                    } catch {
+                        print(error)
+                    }
+                }
             }
         }
     }

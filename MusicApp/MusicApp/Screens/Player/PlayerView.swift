@@ -164,6 +164,9 @@ struct PlayerView: View {
                         
                         Button(action: {
                             // Next music
+                            Task {
+                                await player.next()
+                            }
                         }) {
                             Image(systemName: "forward.fill")
                                 .font(.title2)

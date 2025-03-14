@@ -111,7 +111,8 @@ struct PlaylistView: View {
                             print("Play button tapped")
                             if let firstTrack = oo.tracks.first {
                                 Task {
-                                    await player.play(firstTrack)
+//                                    await player.play(firstTrack)
+                                    await player.play(oo.tracks, selectedTrack: firstTrack)
                                 }
                             }
                             
@@ -132,7 +133,7 @@ struct PlaylistView: View {
                             TrackRowView(track: track, onTap: { selectedTrack in
                                 print("Track selected: \(selectedTrack.title)")
                                 Task {
-                                    await player.play(selectedTrack)
+                                    await player.play(oo.tracks, selectedTrack: selectedTrack)
                                 }
                                 withAnimation {
                                     player.isPlayerPresented = true

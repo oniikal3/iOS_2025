@@ -17,6 +17,11 @@ import SwiftUI
  - Implement show artist in HomeView and make it clickable to ArtistView
  */
 
+/* Homework #3
+ - Implement back button in player view
+ - Implement auto play next song
+ */
+
 /* Homework - Backlog
  - Use icon from image instead of systemName
  - Implement feature favorite music

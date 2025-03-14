@@ -10,7 +10,24 @@ import AVFoundation
 
 @Observable
 class MusicPlayerOO {
-    private(set) var currentTrack: TrackDO?
+    
+    // declare currentTrack and make didSet to createPlayer
+    private(set) var currentTrack: TrackDO? {
+        didSet {
+            print("currentTrack didSet")
+            print("player: \(player)")
+            if player != nil {
+                stop()
+            }
+            
+            if let currentTrack = currentTrack {
+                createPlayer(for: currentTrack)
+            }
+        }
+    }
+    
+    private(set) var tracks: [TrackDO] = []
+    
     var isPlayerPresented = false
     var progress: Double = 0.0 // Playback progress (0.0 - 1.0)
     var progressTime: String {
@@ -57,31 +74,46 @@ class MusicPlayerOO {
         await play(currentTrack, showPlayer: showPlayer)
     }
     
-    func play(_ track: TrackDO, showPlayer: Bool = true) async {
+    func play(_ tracks: [TrackDO], selectedTrack: TrackDO, showPlayer: Bool = true) async {
+        self.tracks = tracks
+        await play(selectedTrack, showPlayer: showPlayer)
+    }
+    
+    private func play(_ track: TrackDO, showPlayer: Bool = true) async {
         if isPlayerPresented == false && showPlayer {
             isPlayerPresented = true
         }
         
         // if track is paused, resume
-        if let player = player, let currentTrack = currentTrack, currentTrack.id == track.id {
+        if let player = player, let currentTrack = self.currentTrack, currentTrack.id == track.id {
             player.play()
-//            isPlaying = true
             return
-        } else {
-            stop()
         }
+//        } else {
+//            stop()
+//        }
         
         // if new track, fetch details and play
         await fetchTrackDetails(for: track)
         
-        guard let previewURL = currentTrack?.previewURL else { return }
+//        guard let previewURL = currentTrack.previewURL else { return }
+//        
+//        player = AVPlayer(url: previewURL)
+//        player?.play()
+//        observePlayerStatus()
+//        observeProgress()
+//        observeRate()
+//        isPlaying = true
+    }
+    
+    private func createPlayer(for track: TrackDO) {
+        guard let previewURL = track.previewURL else { return }
         
         player = AVPlayer(url: previewURL)
         player?.play()
         observePlayerStatus()
         observeProgress()
         observeRate()
-//        isPlaying = true
     }
     
     func pause() {
@@ -99,9 +131,18 @@ class MusicPlayerOO {
 //        isPlaying = false
     }
     
+    func next() async {
+        guard let currentTrack = currentTrack, let currentIndex = tracks.firstIndex(where: { $0.id == currentTrack.id }) else { return }
+        
+        // calculate next index by using modulo operator to loop back to the first track
+        let nextIndex = (currentIndex + 1) % tracks.count
+        print("Next index: \(nextIndex)")
+        await fetchTrackDetails(for: tracks[nextIndex])
+    }
+    
     private func fetchTrackDetails(for track: TrackDO) async {
         // check if the track is already fetched
-        guard currentTrack?.id != track.id else { return }
+//        guard currentTrack?.id != track.id else { return }
         
         do {
             let detail = try await SpotifyAPI.shared.getTrack(for: track.id)

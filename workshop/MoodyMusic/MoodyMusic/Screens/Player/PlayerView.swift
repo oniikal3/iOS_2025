@@ -8,11 +8,19 @@
 import SwiftUI
 
 struct PlayerView: View {
+    @Environment(MusicPlayerOO.self) private var player: MusicPlayerOO
+    
+    @State private var rotation: Double = 0.0
+    @State private var offsetY: CGFloat = 0.0
+    
     var body: some View {
         VStack(spacing: 40) {
             HStack {
                 Button {
                     print("Close player")
+                    withAnimation {
+                        player.isPlayerPresented = false
+                    }
                 } label: {
                     Image(systemName: "chevron.down")
                         .resizable()
@@ -49,6 +57,12 @@ struct PlayerView: View {
                         .stroke(.black, lineWidth: 4)
                 }
                 .shadow(radius: 10)
+                .rotationEffect(.degrees(rotation), anchor: .center)
+                .animation(.linear(duration: 5).repeatForever(autoreverses: false), value: rotation)
+                .onAppear {
+                    rotation = 360
+                }
+            
             
             // Music title and artist name
             VStack {
@@ -100,6 +114,7 @@ struct PlayerView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 50, height: 50)
+                            .foregroundStyle(.yellow)
                     }
                     
                     // Next button
@@ -125,9 +140,32 @@ struct PlayerView: View {
             Spacer()
         }
         .padding()
+        .background(.black)
+        .foregroundStyle(.white)
+        .offset(y: offsetY)
+        .gesture(
+            DragGesture()
+                .onChanged { value in
+                    if value.translation.height > 0 {
+                        offsetY = value.translation.height
+                    }
+                }
+                .onEnded { value in
+                    if value.translation.height > 200 {
+                        // Collapse player view
+                        withAnimation {
+                            player.isPlayerPresented = false
+                        }
+                    } else {
+                        offsetY = 0
+                    }
+                }
+        )
     }
 }
 
 #Preview {
-    PlayerView()
+    PreviewWrapper {
+        PlayerView()
+    }
 }
