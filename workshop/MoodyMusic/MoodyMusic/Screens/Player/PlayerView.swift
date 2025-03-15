@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PlayerView: View {
     @Environment(MusicPlayerOO.self) private var player: MusicPlayerOO
+    @Environment(FavoriteManager.self) private var favoriteManager: FavoriteManager
     
     @State private var rotation: Double = 0.0
     @State private var offsetY: CGFloat = 0.0
@@ -46,29 +47,49 @@ struct PlayerView: View {
 
             }
             
-            Image(systemName: "music.note")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 300, height: 300)
-                .background(.gray)
-                .clipShape(Circle())
-                .overlay {
-                    Circle()
-                        .stroke(.black, lineWidth: 4)
-                }
-                .shadow(radius: 10)
-                .rotationEffect(.degrees(rotation), anchor: .center)
-                .animation(.linear(duration: 5).repeatForever(autoreverses: false), value: rotation)
-                .onAppear {
-                    rotation = 360
-                }
+            AsyncImage(url: player.currentTrack?.imageURL) { image in
+                image.resizable()
+            } placeholder: {
+                Image(systemName: "music.note")
+                    .resizable()
+                    .scaledToFit()
+            }
+            .frame(width: 300, height: 300)
+            .clipShape(Circle())
+            .overlay {
+                Circle()
+                    .stroke(.gray, lineWidth: 4)
+            }
+            .shadow(radius: 10)
+            .rotationEffect(.degrees(rotation), anchor: .center)
+            .animation(.linear(duration: 5).repeatForever(autoreverses: false), value: rotation)
+            .onAppear {
+                rotation = 360
+            }
+            
+//            Image(systemName: "music.note")
+//                .resizable()
+//                .scaledToFit()
+//                .frame(width: 300, height: 300)
+//                .background(.gray)
+//                .clipShape(Circle())
+//                .overlay {
+//                    Circle()
+//                        .stroke(.black, lineWidth: 4)
+//                }
+//                .shadow(radius: 10)
+//                .rotationEffect(.degrees(rotation), anchor: .center)
+//                .animation(.linear(duration: 5).repeatForever(autoreverses: false), value: rotation)
+//                .onAppear {
+//                    rotation = 360
+//                }
             
             
             // Music title and artist name
             VStack {
-                Text("Bohemian Rhapsody")
+                Text(player.currentTrack?.title ?? "Unknown Title")
                     .font(.title)
-                Text("Queen")
+                Text(player.currentTrack?.artist ?? "Unknown Artist")
                     .font(.title2)
             }
             
@@ -80,7 +101,7 @@ struct PlayerView: View {
                     Text("0:00")
                         .font(.caption)
                     Spacer()
-                    Text("3:00")
+                    Text(player.currentTrack?.endTime ?? "00:00")
                         .font(.caption)
                 }
             }
@@ -130,10 +151,17 @@ struct PlayerView: View {
                 
                 // Favorite button
                 Button {
-                    
+                    if let trackId = player.currentTrack?.id {
+                        favoriteManager.toggleFavorite(trackId: trackId)
+                    }
                 } label: {
-                    Image(systemName: "heart.fill")
+//                    Image(systemName: "heart.fill")
+//                        .font(.title2)
+                    let trackId = player.currentTrack?.id ?? ""
+                    let isFavorite = favoriteManager.isFavorite(trackId: trackId)
+                    Image(systemName: isFavorite ? "heart.fill" : "heart")
                         .font(.title2)
+                        .foregroundStyle(isFavorite ? .red : .white)
                 }
             }
             

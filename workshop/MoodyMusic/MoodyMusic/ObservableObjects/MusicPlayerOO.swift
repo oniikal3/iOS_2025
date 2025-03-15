@@ -15,7 +15,7 @@ class MusicPlayerOO {
     var tracks: [TrackDO] = []
     
     private var player: AVPlayer?
-    private var currentTrack: TrackDO? {
+    private(set) var currentTrack: TrackDO? { // ให้ MusicOO เป็นคน set track ให้ currentTrack เท่านั้น
         didSet {
             if let currentTrack = currentTrack {
                 createPlayer(for: currentTrack)

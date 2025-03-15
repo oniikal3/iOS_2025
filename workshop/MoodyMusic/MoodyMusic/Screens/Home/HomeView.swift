@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {    
     
@@ -14,6 +15,8 @@ struct HomeView: View {
 //    @State private var playlists: [Playlist] = []
     @State private var oo = HomeOO()
     @State private var selectedPlaylist: PlaylistDO? // ใช้สำหรับเก็บค่า playlist ที่ user กด มาจาก card view
+    
+    @Query private var favoriteTracks: [FavTrack]
     
     var profileHeaderView: some View {
         HStack {
@@ -64,6 +67,20 @@ struct HomeView: View {
                     
                     AlbumHorizontalSectionView { _ in
                         isPresented = true
+                    }
+                    
+                    // Favorite tracks
+                    if !favoriteTracks.isEmpty {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            LazyHStack(spacing: 16) {
+                                ForEach(favoriteTracks) { favTrack in
+                                    VStack {
+                                        Text(favTrack.trackId)
+                                        Text(favTrack.dateAdded, style: .date)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 .foregroundStyle(.white)

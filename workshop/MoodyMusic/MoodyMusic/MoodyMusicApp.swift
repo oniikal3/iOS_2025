@@ -6,16 +6,31 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct MoodyMusicApp: App {
     @State var player = MusicPlayerOO()
+    @State var favoriteManager: FavoriteManager
+    
+    let container: ModelContainer
+    
+    init() {
+        do {
+            container = try ModelContainer(for: FavTrack.self)
+            favoriteManager = FavoriteManager(modelContext: container.mainContext)
+        } catch {
+            fatalError("Unable to create ModelContainer. Error: \(error)")
+        }
+    }
     
     var body: some Scene {
         WindowGroup {
             MainTabView()
                 .environment(player)
+                .environment(favoriteManager)
         }
+        .modelContainer(container)
     }
 }
 

@@ -14,4 +14,11 @@ struct TrackDO {
     let imageURL: URL?
     let duration: Int
     let previewURL: URL?
+    
+    var endTime: String {
+        // Format duration to mm:ss
+        let minutes = duration / 60
+        let seconds = duration % 60
+        return "\(minutes):\(seconds)"
+    }
 }
