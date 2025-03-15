@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct TrackRowView: View {
-    
-    private let url = URL(string: "https://picsum.photos/200")
+    let track: TrackDO
     
     var body: some View {
         HStack(spacing: 16) {
@@ -19,7 +18,7 @@ struct TrackRowView: View {
                 .padding(.horizontal, 4)
             
             // Cover image
-            AsyncImage(url: url) { image in
+            AsyncImage(url: track.imageURL) { image in
                 // โหลดรูปได้
                 image
                     .resizable()
@@ -31,10 +30,10 @@ struct TrackRowView: View {
             
             // Track title and artist name
             VStack(alignment: .leading) {
-                Text("Bohemian Rhapsody")
+                Text(track.title)
                     .font(.headline)
                     .bold()
-                Text("Queen")
+                Text(track.artist)
                     .font(.subheadline)
             }
             
@@ -56,5 +55,12 @@ struct TrackRowView: View {
 }
 
 #Preview {
-    TrackRowView()
+    TrackRowView(track: dummyTrack)
 }
+
+let dummyTrack = TrackDO(id: "1",
+                         title: "Title",
+                         artist: "Artist",
+                         imageURL: URL(string: "https://picsum.photos/200"),
+                         duration: 0,
+                         previewURL: nil)

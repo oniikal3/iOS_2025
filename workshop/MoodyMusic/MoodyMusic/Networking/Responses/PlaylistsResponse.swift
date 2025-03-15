@@ -34,6 +34,7 @@ struct Playlist: Decodable {
     let id: String
     let images: [SPTImage]
     let name: String
+    let description: String?
     let owner: Owner
 }
 

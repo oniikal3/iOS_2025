@@ -9,14 +9,14 @@ import SwiftUI
 
 struct AlbumCardView: View {
     
-    var item: Playlist
-    var onTap: (() -> Void)? = nil
+    var item: PlaylistDO
+    var onTap: ((PlaylistDO) -> Void)? = nil
 //    let onTap: () -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
 //            Image(systemName: "music.note")
-            AsyncImage(url: item.images[0].url) { image in
+            AsyncImage(url: item.image) { image in
                 image
                     .resizable()
                     .scaledToFit()
@@ -33,7 +33,7 @@ struct AlbumCardView: View {
                 .frame(width: 150, alignment: .leading)
                 .lineLimit(1)
             
-            Text(item.owner.display_name)
+            Text(item.owner)
                 .font(.subheadline)
                 .frame(width: 150, alignment: .leading)
                 .lineLimit(1)
@@ -41,14 +41,17 @@ struct AlbumCardView: View {
         .padding(.bottom, 4)
         .onTapGesture {
             print("Tapped")
-            onTap?() //callback
+            onTap?(item) //callback
         }
     }
 }
 
 #Preview {
-    AlbumCardView(item: Playlist(id: "1",
-                                 images: [SPTImage(url: URL(string: "https://picsum.photos/200"))],
-                                 name: "Album Name",
-                                 owner: Owner(id: "1", display_name: "Owner")))
+    AlbumCardView(item: PlaylistDO(id: "1",
+                                   name: "Bohemian Rhapsody",
+                                   description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros auctor, fermentum purus ut, tincidunt felis.",
+                                   image: URL(string: "https://picsum.photos/200"),
+                                   owner: "Queen"
+                                  )
+                  )
 }

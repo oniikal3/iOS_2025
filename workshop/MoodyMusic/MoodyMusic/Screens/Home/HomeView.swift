@@ -11,7 +11,9 @@ struct HomeView: View {
     
     @State private var isPresented: Bool = false
     
-    @State private var playlists: [Playlist] = []
+//    @State private var playlists: [Playlist] = []
+    @State private var oo = HomeOO()
+    @State private var selectedPlaylist: PlaylistDO? // ใช้สำหรับเก็บค่า playlist ที่ user กด มาจาก card view
     
     var profileHeaderView: some View {
         HStack {
@@ -54,11 +56,13 @@ struct HomeView: View {
                 
                 // Album sections
                 ScrollView(.vertical) {
-                    AlbumHorizontalSectionView(items: playlists) {
+                    AlbumHorizontalSectionView(items: oo.chillPlaylist) { selectedItem in
                         print("Tapped album in HomeView")
                         isPresented = true
+                        selectedPlaylist = selectedItem
                     }
-                    AlbumHorizontalSectionView {
+                    
+                    AlbumHorizontalSectionView { _ in
                         isPresented = true
                     }
                 }
@@ -66,16 +70,16 @@ struct HomeView: View {
 
             }
             .background(.black)
-            .navigationDestination(isPresented: $isPresented) {
-                PlaylistView()
-            }
+//            .navigationDestination(isPresented: $isPresented) {
+//                PlaylistView(playlist: <#T##PlaylistDO#>)
+//            }
+            .navigationDestination(item: $selectedPlaylist, destination: { playlist in
+                PlaylistView(playlist: playlist)
+            })
             .onAppear() {
-                Task {
-                    do {
-                        let response = try await SpotifyAPI.shared.getChillPlaylists()
-                        self.playlists = response.playlists.items
-                    } catch {
-                        print(error)
+                if oo.chillPlaylist.isEmpty {
+                    Task {
+                        await oo.fetch()
                     }
                 }
             }

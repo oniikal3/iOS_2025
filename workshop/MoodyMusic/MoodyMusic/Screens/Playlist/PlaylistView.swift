@@ -10,13 +10,20 @@ import SwiftUI
 struct PlaylistView: View {
     
     @Environment(MusicPlayerOO.self) private var player: MusicPlayerOO
+    
+//    let playlist: PlaylistDO
+    @State private var oo: PlaylistOO
+    
+    init(playlist: PlaylistDO) {
+        _oo = State(initialValue: PlaylistOO(playlist: playlist))
+    }
         
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
                 HStack {
                     Spacer()
-                    AsyncImage(url: URL(string: "https://picsum.photos/200")) { image in
+                    AsyncImage(url: oo.playlist.image) { image in
                         // โหลดรูปได้
                         image
                             .resizable()
@@ -32,13 +39,15 @@ struct PlaylistView: View {
                 }
                 
                 VStack(alignment: .leading) {
-                    Text("Bohemian Rhapsody")
+                    Text(oo.playlist.name)
                         .font(.title)
                         .bold()
                         
                     // Description
-                    Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec eros auctor, fermentum purus ut, tincidunt felis.")
-                        .font(.subheadline)
+                    if let description = oo.playlist.description {
+                        Text(description)
+                            .font(.subheadline)
+                    }
                 }
                 
                 // Add, Download, Suffle and Play buttons
@@ -84,7 +93,12 @@ struct PlaylistView: View {
                     Button {
                         print("Play")
                         withAnimation {
-                            player.isPlayerPresented = true
+//                            player.isPlayerPresented = true
+                            if let firstTrack = oo.tracks.first {
+                                Task {
+                                    await player.play(oo.tracks, selectedTrack: firstTrack)
+                                }
+                            }
                         }
                     } label: {
                         Image(systemName: "play.circle.fill")
@@ -97,14 +111,24 @@ struct PlaylistView: View {
                 
                 // Track list
                 LazyVStack {
-                    ForEach(1...10, id: \.self) { index in
-                        TrackRowView()
+//                    ForEach(1...10, id: \.self) { index in
+//                        TrackRowView()
+//                    }
+                    ForEach(oo.tracks, id: \.id) { track in
+                        TrackRowView(track: track)
                     }
                 }
             }
             .padding(.horizontal)
         }
         .background(.gray)
+        .onAppear {
+            if oo.tracks.isEmpty {
+                Task {
+                    await oo.fetchTracks()
+                }
+            }
+        }
 //        .fullScreenCover(isPresented: $isPlayerPresented) {
 //            PlayerView(isPresented: $isPlayerPresented)
 //        }
@@ -114,6 +138,14 @@ struct PlaylistView: View {
 
 #Preview {
     PreviewWrapper {
-        PlaylistView()
+        PlaylistView(playlist: dummyPlaylist)
     }
 }
+
+// Dummy PlaylistDO data
+let dummyPlaylist = PlaylistDO(id: "1",
+                          name: "Playlist Name",
+                          description: "Description",
+                          image: URL(string: "https://picsum.photos/200"),
+                          owner: "Owner name")
+
